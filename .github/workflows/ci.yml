@@ -1,0 +1,36 @@
+name: CI - demopage
+'on':
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: pip install -r requirements.txt || pip install -e .[dev] || echo 'No dependencies
+        file found'
+    - name: Cache pip packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+        restore-keys: ${{ runner.os }}-pip-
+    - name: Build package
+      run: pip install build && python -m build
+    strategy:
+      matrix:
+        python-version:
+        - '3.9'
+        - '3.10'
+        - '3.11'
+        - '3.12'
