@@ -1,5 +1,4 @@
 name: CI - demopage
--g0gn-4ogk ;.g
 'on':
   push:
     branches:
